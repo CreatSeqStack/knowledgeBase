@@ -1,0 +1,32 @@
+# Server配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# 数据库配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      username: root
+      password: 24843464
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/knowledge
+
+# mybatis 配置
+mybatis-plus:
+  configuration:  # setting配置
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 日志输出
+  type-aliases-package: com.system.pojo # 配置别名
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      table-prefix: t_
+
+#jwt配置
+jwt:
+  token:
+    tokenExpiration: 120 #有效时间,单位分钟
+    tokenSignKey: knowledge  #当前程序签名秘钥 自定义
+
