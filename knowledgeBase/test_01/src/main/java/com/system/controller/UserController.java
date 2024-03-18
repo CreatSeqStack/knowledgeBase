@@ -1,8 +1,11 @@
 package com.system.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.system.pojo.User;
 import com.system.service.UserService;
+import com.system.utils.JwtHelper;
 import com.system.utils.Result;
+import com.system.utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtHelper jwtHelper;
 
     /**
      * 登录
@@ -103,6 +109,23 @@ public class UserController {
     public Result register(@RequestBody User user) {
 
         return userService.register(user);
+    }
+
+    /**
+     * 检查token是否过期
+     * @param token token字符串
+     * @return 验证结果
+     */
+    @GetMapping("checkLogin")
+    public Result checkLogin(@RequestHeader String token) {
+
+        // token过期
+        if (StringUtils.isEmpty(token) || jwtHelper.isExpiration(token)) {
+            return Result.build(null, ResultCodeEnum.NOT_LOGIN);
+        }
+
+        // token未过期
+        return Result.ok(null);
     }
 
 }

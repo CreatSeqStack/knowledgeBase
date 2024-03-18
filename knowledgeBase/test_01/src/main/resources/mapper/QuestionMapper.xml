@@ -10,4 +10,27 @@
             values (#{uid}, #{question}, NOW())
     </insert>
 
+    <!-- 自定义映射 -->
+    <resultMap id="answer" type="question">
+        <!-- 第一层属性 Question对象 -->
+        <id column="question_id" property="questionId"/>
+        <!-- 普通列 -->
+        <result column="uid" property="uid"/>
+        <result column="question" property="question"/>
+
+        <!-- 对象属性赋值 -->
+        <association property="answer" javaType="answer">
+            <result column="answer" property="answer"/>
+        </association>
+
+    </resultMap>
+
+    <!-- 根据uid查询用户的历史记录（问题和答案） 多表查询-->
+    <select id="queryUserHistoryByUid" resultMap="answer">
+        select tqu.question_id, tqu.uid, tqu.question, tan.answer
+            from t_question tqu inner join t_answer tan
+                on tqu.question_id = tan.question_id where tqu.uid = #{uid}
+    </select>
+
+
 </mapper>

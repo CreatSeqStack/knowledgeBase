@@ -25,10 +25,7 @@ public enum ResultCodeEnum {
     USERNAME_USED(505,"userNameUsed"),
 
     // 数据库数据插入失败
-    INSERT_ERROR(500, "insertError"),
-
-    // 数据库数据查询失败
-    QUERY_ERROR(506, "queryError");
+    INSERT_ERROR(500, "insertError");
 
     private final Integer code;
     private final String message;

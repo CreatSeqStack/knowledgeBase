@@ -2,7 +2,6 @@ package com.system.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.Version;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 /**
  * @author DSX
@@ -11,8 +10,11 @@ import lombok.Data;
 @Data
 public class Question {
 
-    // 用户id
+    // 问题编号
     @TableId
+    private Integer questionId;
+
+    // 用户id
     private Integer uid;
 
     // 用户提出的问题
@@ -27,5 +29,10 @@ public class Question {
 
     // 逻辑删除字段
     private Integer isDeleted;
+
+    /**
+     * 一个问题对应一个答案，使用答案对象装对应的信息
+     */
+    private Answer answer;
 
 }

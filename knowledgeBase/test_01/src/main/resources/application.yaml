@@ -23,6 +23,7 @@ mybatis-plus:
     db-config:
       logic-delete-field: isDeleted
       table-prefix: t_
+      id-type: auto
 
 #jwt配置
 jwt:

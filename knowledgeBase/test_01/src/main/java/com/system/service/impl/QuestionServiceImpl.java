@@ -2,7 +2,9 @@ package com.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.system.mapper.AnswerMapper;
 import com.system.mapper.QuestionMapper;
+import com.system.pojo.Answer;
 import com.system.pojo.Question;
 import com.system.service.QuestionService;
 import com.system.utils.Result;
@@ -10,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import static com.system.utils.ResultCodeEnum.INSERT_ERROR;
-import static com.system.utils.ResultCodeEnum.QUERY_ERROR;
 
 /**
  * @author DSX
@@ -22,6 +23,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private AnswerMapper answerMapper;
 
     /**
      * 保存用户提出的问题
@@ -46,14 +50,39 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     @Override
     public Result queryAllQuestionByUid(Integer uid) {
         LambdaQueryWrapper<Question> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Question::getUid, uid);
+        lambdaQueryWrapper
+                .select(Question.class, item -> !"answer".equals(item.getColumn()))
+                .eq(Question::getUid, uid);
         List<Question> questions = questionMapper.selectList(lambdaQueryWrapper);
 
-        if (questions == null) {
-            return Result.build("数据查询失败", QUERY_ERROR);
+        return Result.ok(questions);
+    }
+
+    /**
+     * 根据uid查询用户的历史记录，问题和答案
+     * @param uid 用户id
+     * @return 返回查询信息
+     */
+    @Override
+    public Result queryUserHistoryByUid(Integer uid) {
+        List<Question> result = questionMapper.queryUserHistoryByUid(uid);
+        return Result.ok(result);
+    }
+
+    /**
+     * 接受大模型传来的答案
+     * @param answer 答案
+     * @return 返回执行结果
+     */
+    @Override
+    public Result receiveAnswer(Answer answer) {
+        int rows = answerMapper.insert(answer);
+
+        if (rows < 1) {
+            return Result.build("数据插入失败", INSERT_ERROR);
         }
 
-        return Result.ok(questions);
+        return Result.ok(null);
     }
 
 

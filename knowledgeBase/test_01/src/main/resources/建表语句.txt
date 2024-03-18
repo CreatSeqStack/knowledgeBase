@@ -1,0 +1,33 @@
+用户表
+use knowledge;
+CREATE TABLE `t_user`  (
+    `uid` INT NOT NULL AUTO_INCREMENT COMMENT '用户id',
+    `username` VARCHAR(20)  NOT NULL COMMENT '用户登录名',
+    `user_pwd` VARCHAR(50)  NOT NULL COMMENT '用户登录密码密文',
+    `version` INT DEFAULT 1 COMMENT '乐观锁',
+    `is_deleted` INT DEFAULT 0 COMMENT '逻辑删除 1 表示删除',
+    PRIMARY KEY (`uid`) USING BTREE,
+    UNIQUE INDEX `username_unique`(`username`) USING BTREE
+) ENGINE = INNODB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+问题表
+CREATE TABLE `t_question`  (
+    `question_id` INT NOT NULL AUTO_INCREMENT COMMENT '问题编号',
+    `uid` INT NOT NULL COMMENT '用户id',
+    `question` VARCHAR(5000)  NOT NULL COMMENT '用户提问',
+    `question_time` DATETIME(0) NULL DEFAULT NULL COMMENT '提问时间',
+    `version` INT DEFAULT 1 COMMENT '乐观锁',
+    `is_deleted` INT DEFAULT 0 COMMENT '逻辑删除 1 表示删除',
+    PRIMARY KEY (`question_id`) USING BTREE
+) ENGINE = INNODB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+答案表
+CREATE TABLE `t_answer`  (
+    `question_id` INT NOT NULL AUTO_INCREMENT COMMENT '问题编号',
+    `answer` VARCHAR(5000)  NOT NULL COMMENT '问题答案',
+    `version` INT DEFAULT 1 COMMENT '乐观锁',
+    `is_deleted` INT DEFAULT 0 COMMENT '逻辑删除 1 表示删除',
+    PRIMARY KEY (`question_id`) USING BTREE
+) ENGINE = INNODB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+
