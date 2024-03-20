@@ -35,4 +35,17 @@ public interface QuestionService extends IService<Question> {
      * @return 返回执行的结果
      */
     Result receiveAnswer(Answer answer);
+
+    /**
+     * 前端向后端获取问题的答案
+     * @param uid 用户id
+     * @return 返回问题的答案
+     */
+    Result returnAnswer(String uid);
+
+    /**
+     * 大模型响应超时
+     * @return 返回执行结果
+     */
+    Result responseTimeout();
 }

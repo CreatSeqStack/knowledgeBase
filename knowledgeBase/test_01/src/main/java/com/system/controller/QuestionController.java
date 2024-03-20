@@ -75,6 +75,42 @@ public class QuestionController {
     }
 
     /**
+     * 前端向后端获取问题的答案
+     * 前端：
+     * uid = 789  token
+     * 后端：
+     * {
+     *     "code": 200,
+     *     "message": "success",
+     *     "data": {
+     *         "questionId": 2,
+     *         "answer": "一",
+     *         "version": 1,
+     *         "isDeleted": 0
+     *     }
+     * }
+     * @param uid 用户id
+     * @return 返回问题的答案
+     */
+    @GetMapping("returnAnswer")
+    public Result returnAnswer(@RequestParam("uid") String uid) {
+
+        return questionService.returnAnswer(uid);
+    }
+
+    /**
+     * 大模型响应超时，向 t_answer 中的 answer 列插入 Response Timeout
+     * 前端：
+     * uid = 789  token
+     * @return 执行结果
+     */
+    @PostMapping("responseTimeout")
+    public Result responseTimeout() {
+
+        return questionService.responseTimeout();
+    }
+
+    /**
      * 根據用戶的uid查詢該用戶提出的全部问题
      * 前端：
      * param uid = 123

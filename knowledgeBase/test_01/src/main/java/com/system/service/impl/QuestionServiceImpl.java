@@ -8,6 +8,7 @@ import com.system.pojo.Answer;
 import com.system.pojo.Question;
 import com.system.service.QuestionService;
 import com.system.utils.Result;
+import com.system.utils.ResultCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -76,6 +77,48 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
      */
     @Override
     public Result receiveAnswer(Answer answer) {
+        int rows = answerMapper.insert(answer);
+
+        if (rows < 1) {
+            return Result.build("数据插入失败", INSERT_ERROR);
+        }
+
+        return Result.ok(null);
+    }
+
+    /**
+     * 前端向后端获取问题的答案
+     * @param uid 用户id
+     * @return 返回问题的答案
+     */
+    @Override
+    public Result returnAnswer(String uid) {
+        // select question_id from t_question where uid = 123 order by question_id desc limit 1
+        // 先获取当前用户提出的最新问题的question_id
+        LambdaQueryWrapper<Question> questionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        questionLambdaQueryWrapper
+                .select(Question::getQuestionId)
+                .eq(Question::getUid, uid)
+                .orderByDesc(Question::getQuestionId)
+                .last("limit 1");
+        Question question = questionMapper.selectOne(questionLambdaQueryWrapper);
+
+
+        // select answer from t_answer order by question_id desc limit 1
+        // 根据问题id查询有没有与之对应的答案
+        Answer answer = answerMapper.selectById(question.getQuestionId());
+
+        return Result.ok(answer);
+    }
+
+    /**
+     * 大模型响应超时
+     * @return 返回执行结果
+     */
+    @Override
+    public Result responseTimeout() {
+        Answer answer = new Answer();
+        answer.setAnswer("Response Timeout");
         int rows = answerMapper.insert(answer);
 
         if (rows < 1) {
